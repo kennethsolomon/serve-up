@@ -15,5 +15,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::get('/funnel', function () {
+    return Inertia::render('funnel/index');
+})->name('funnel.index');
+
+Route::get('/menu', function () {
+    return Inertia::render('menu/index');
+})->name('funnel.menu');
+
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
