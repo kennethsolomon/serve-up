@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\ProductStatus;
 use App\Filament\Admin\Resources\ProductResource\Pages;
 use App\Filament\Admin\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
@@ -36,10 +37,7 @@ class ProductResource extends Resource
                     ->required(),
                 Forms\Components\ToggleButtons::make('status')
                     ->inline()
-                    ->options([
-                        'in_stock' => 'In Stock',
-                        'sold_out' => 'Sold Out',
-                    ])
+                    ->options(ProductStatus::class)
                     ->required(),
                 Forms\Components\Section::make('Images')
                     ->schema([
