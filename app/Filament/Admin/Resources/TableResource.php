@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Filament\Admin\Resources;
+
+use App\Enums\TableStatus;
+use App\Filament\Admin\Resources\TableResource\Pages;
+use App\Filament\Admin\Resources\TableResource\RelationManagers;
+use App\Models\Table as TableModel;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
+class TableResource extends Resource
+{
+    protected static ?string $model = TableModel::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\ToggleButtons::make('status')
+                    ->inline()
+                    ->options(TableStatus::class)
+                    ->required(),
+                Forms\Components\TextInput::make('qr_code')
+                    ->label('Qr Code (This is automatically generated)')
+                    ->readOnly(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('qr_code')
+                    ->label('QR Code Image')
+                    ->formatStateUsing(fn ($state) =>
+                        '<img src="data:image/png;base64,' . base64_encode(
+                            QrCode::format('png')->size(100)->generate($state)
+                        ) . '" height="100"/>'
+                    )
+                    ->html()
+                    ->copyable()
+            ])
+            ->filters([
+                ...collect(TableStatus::cases())->map(function ($status) {
+                    return Filter::make($status->name)
+                        ->label($status->name)
+                        ->query(fn (Builder $query) => $query->where('status', $status));
+                })->toArray(),
+            ])->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListTables::route('/'),
+            'create' => Pages\CreateTable::route('/create'),
+            'edit' => Pages\EditTable::route('/{record}/edit'),
+        ];
+    }
+}
