@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->uuid('qr_code')->unique();
-            $table->string('status'); // Available, Occupied, Reserved
+            $table->string('status')->default('available'); // Available, Occupied, Reserved
             $table->timestamps();
         });
     }

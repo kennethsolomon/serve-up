@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\TransactionStatus;
 use App\Filament\Admin\Resources\TransactionResource\Pages;
 use App\Filament\Admin\Resources\TransactionResource\RelationManagers;
 use App\Models\Transaction;
@@ -23,7 +24,18 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                //
+            Forms\Components\Select::make('table_id')
+                ->label('Table')
+                ->relationship('table', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+
+                Forms\Components\ToggleButtons::make('status')
+                    ->inline()
+                    ->options(TransactionStatus::class)
+                    ->required(),
+                Forms\Components\TextInput::make('total_amount')->default(0)->readOnly(),
             ]);
     }
 
