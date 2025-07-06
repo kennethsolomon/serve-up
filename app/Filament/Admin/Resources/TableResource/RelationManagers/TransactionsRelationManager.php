@@ -23,6 +23,7 @@ class TransactionsRelationManager extends RelationManager
                 Forms\Components\ToggleButtons::make('status')
                     ->inline()
                     ->options(TransactionStatus::class)
+                    ->default(TransactionStatus::Pending)
                     ->required(),
                 Forms\Components\TextInput::make('total_amount')->default(0)->readOnly(),
             ]);
@@ -40,8 +41,14 @@ class TransactionsRelationManager extends RelationManager
             ->filters([
                 //
             ])
+            ->defaultSort('created_at', 'desc')
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->visible(function ($livewire) {
+                        return !$livewire->getOwnerRecord()->transactions()
+                            ->where('status', \App\Enums\TransactionStatus::Pending)
+                            ->exists();
+                    }),
             ])
             ->actions([
                 Action::make('view')

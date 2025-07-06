@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('price', 8, 2);
             $table->decimal('total_price', 10, 2);
-            $table->string('status'); // Preparing, Served, Cancelled
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

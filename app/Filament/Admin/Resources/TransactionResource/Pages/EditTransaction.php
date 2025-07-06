@@ -15,24 +15,28 @@ class EditTransaction extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('billout')
-                ->label('Bill Out')
-                ->icon('heroicon-o-currency-dollar')
-                ->color('success')
-                ->requiresConfirmation()
-                ->modalHeading('Confirm Bill Out')
-                ->modalDescription('Are you sure you want to bill out this transaction? This action cannot be undone.')
-                ->action(function () {
-                    // Resolve and run your service
-                    // app(TransactionService::class)->billout($this->record);
-
-                    // Optional: show a notification
-                    Notification::make()
-                        ->title('Transaction billed out successfully')
-                        ->success()
-                        ->send();
-                }),
+            Action::make('back_to_table')
+                ->label('Back to Table')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(function () {
+                    return route('filament.admin.resources.tables.edit', ['record' => $this->record->table_id]);
+                })
+                ->openUrlInNewTab(false), // Optional: open in same tab or new tab
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function getListeners(): array
+    {
+        return [
+            'transaction-total-updated' => 'updateTotalAmount',
+        ];
+    }
+
+    public function updateTotalAmount($total): void
+    {
+        $this->data['total_amount'] = $total;
+        $this->fillForm();
     }
 }

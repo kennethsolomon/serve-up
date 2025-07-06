@@ -20,7 +20,7 @@ class TableResource extends Resource
 {
     protected static ?string $model = TableModel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
     public static function form(Form $form): Form
     {
@@ -29,6 +29,7 @@ class TableResource extends Resource
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\ToggleButtons::make('status')
                     ->inline()
+                    ->default(TableStatus::Available)
                     ->options(TableStatus::class)
                     ->required(),
                 Forms\Components\TextInput::make('qr_code')
@@ -87,5 +88,15 @@ class TableResource extends Resource
             'create' => Pages\CreateTable::route('/create'),
             'edit' => Pages\EditTable::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Operations';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 0;
     }
 }
