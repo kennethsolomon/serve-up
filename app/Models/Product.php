@@ -17,9 +17,16 @@ class Product extends Model implements HasMedia
         'price',
         'stock',
         'status',
+        'is_popular',
+        'category_id',
     ];
 
     protected $casts = [
         'status' => ProductStatus::class,
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

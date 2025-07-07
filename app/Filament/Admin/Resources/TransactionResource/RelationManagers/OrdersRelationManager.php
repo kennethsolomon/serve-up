@@ -5,9 +5,11 @@ namespace App\Filament\Admin\Resources\TransactionResource\RelationManagers;
 use App\Enums\OrderStatus;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Table;
 use Filament\Forms\Set;
 use Filament\Forms\Get;
@@ -97,6 +99,28 @@ class OrdersRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    BulkAction::make('update_status')
+                        ->label('Update Status')
+                        ->form([
+                            Select::make('status')
+                                ->label('New Status')
+                                ->options([
+                                    OrderStatus::Preparing->value => 'Preparing',
+                                    OrderStatus::Served->value => 'Served',
+                                    OrderStatus::Cancelled->value => 'Cancelled',
+                                ])->default(OrderStatus::Preparing->value)
+                                ->required(),
+                        ])
+                        ->action(function (array $data, $records) {
+                            foreach ($records as $record) {
+                                $record->update([
+                                    'status' => $data['status'],
+                                ]);
+                            }
+                        })
+                        ->deselectRecordsAfterCompletion()
+                        ->color('success')
+                        ->icon('heroicon-o-pencil-square'),
                     Tables\Actions\DeleteBulkAction::make()
                         ->after(fn () => $this->recalculateTransactionTotal()),
                 ]),

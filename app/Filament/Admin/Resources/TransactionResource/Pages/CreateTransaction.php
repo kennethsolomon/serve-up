@@ -14,7 +14,6 @@ class CreateTransaction extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        dd('test', $data);
         $hasPendingTransaction = Table::where('id', $data['table_id'])->whereHas('transactions', function ($query) {
             $query->where('status', 'pending');
         })->exists();
