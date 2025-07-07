@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\TableController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -19,9 +20,11 @@ Route::get('/funnel', function () {
     return Inertia::render('funnel/index');
 })->name('funnel.index');
 
-Route::get('/menu', function () {
-    return Inertia::render('menu/index');
-})->name('funnel.menu');
+Route::get('/table', function () {
+    return Inertia::render('table/index');
+})->name('table.table');
+
+Route::get('/table/{table}', [TableController::class, 'index'])->name('table.index');
 
 
 require __DIR__.'/settings.php';

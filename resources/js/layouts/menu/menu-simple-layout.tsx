@@ -24,7 +24,7 @@ export default function MenuSimpleLayout({ children, title }: PropsWithChildren<
         <div className="flex w-full min-h-svh flex-col items-center gap-6 bg-background p-6 md:p-10">
             <div className="w-full max-w-sm">
                 <div className="flex flex-col gap-8">
-                    <div className='sticky top-0 z-50 bg-white'>
+                    <div className='sticky top-0 z-50'>
                         <div className="flex flex-col items-center gap-4">
                             <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
                                 <div className="mb-1 flex w-64 items-center justify-center rounded-md">
