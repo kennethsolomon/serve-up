@@ -49,13 +49,7 @@ class TableResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->badge(),
                 Tables\Columns\TextColumn::make('qr_code')
-                    ->label('QR Code Image')
-                    ->formatStateUsing(fn ($state) =>
-                        '<img src="data:image/png;base64,' . base64_encode(
-                            QrCode::format('png')->size(100)->generate($state)
-                        ) . '" height="100"/>'
-                    )
-                    ->html()
+                    ->label('QR Code')
                     ->copyable()
             ])
             ->filters([
