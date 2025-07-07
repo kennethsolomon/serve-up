@@ -20,10 +20,6 @@ Route::get('/funnel', function () {
     return Inertia::render('funnel/index');
 })->name('funnel.index');
 
-Route::get('/table', function () {
-    return Inertia::render('table/index');
-})->name('table.table');
-
 Route::get('/table/{table}', [TableController::class, 'index'])->name('table.index');
 
 
